@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>zZzZzZz</title>
+        <meta charset="UTF-8">
+    </head>
+    <style>
+        .board {
+            height: 100%;
+            width: 100%;
+            left: 0px;
+            top:0px;
+            background: #eee;
+            position: absolute;
+            display: block;
+        }
+    </style>
+    <body>
+        <!--canvas style="display: block" id="canvas" width="255" height="255"/-->
+        <canvas class="board" id="canvas"></canvas>
+
+        <!--script type="text/javascript" src="../scala-js-test-opt.js"></script-->
+        <script type="text/javascript" src="../scala-js-test-fastopt.js"></script>
+
+        <script>
+            var mul = window.devicePixelRatio;
+            GameEngine.init(document.getElementById("canvas"),
+                            Math.trunc(window.innerWidth * mul),
+                            Math.trunc(window.innerHeight * mul));
+        </script>
+    </body>
+</html>

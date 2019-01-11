@@ -1,0 +1,64 @@
+<svg version="1.1"
+     baseProfile="full"
+     viewBox="0 0 100 100"
+     xmlns="http://www.w3.org/2000/svg">
+
+    <style>
+        .cell-line { stroke: rgb(0,0,0); stroke-width: 0.2%; }
+        .border-line { stroke: rgb(0,0,0); stroke-width: 1%; }
+        .dot { stroke: rgb(0,0,0); stroke-width: 1%; stroke-linecap: round; }
+        .column-index { font-size: 4px; padding: 0; }
+        .row-index { font-size: 4px; padding: 0; }
+    </style>
+
+    <text x="9%" y="4%" class="column-index">9</text>
+    <text x="19%" y="4%" class="column-index">8</text>
+    <text x="29%" y="4%" class="column-index">7</text>
+    <text x="39%" y="4%" class="column-index">6</text>
+    <text x="49%" y="4%" class="column-index">5</text>
+    <text x="59%" y="4%" class="column-index">4</text>
+    <text x="69%" y="4%" class="column-index">3</text>
+    <text x="79%" y="4%" class="column-index">2</text>
+    <text x="89%" y="4%" class="column-index">1</text>
+
+    <text x="96%" y="11%" class="row-index">a</text>
+    <text x="96%" y="21%" class="row-index">b</text>
+    <text x="96%" y="31%" class="row-index">c</text>
+    <text x="96%" y="41%" class="row-index">d</text>
+    <text x="96%" y="51%" class="row-index">e</text>
+    <text x="96%" y="61%" class="row-index">f</text>
+    <text x="96%" y="71%" class="row-index">g</text>
+    <text x="96%" y="81%" class="row-index">h</text>
+    <text x="96%" y="91%" class="row-index">i</text>
+
+    <line x1="5%" x2="95%" y1="5%" y2="5%" class="cell-line"></line>
+    <line x1="5%" x2="5%" y1="5%" y2="95%" class="cell-line"></line>
+    <line x1="5%" x2="95%" y1="15%" y2="15%" class="cell-line"></line>
+    <line x1="15%" x2="15%" y1="5%" y2="95%" class="cell-line"></line>
+    <line x1="5%" x2="95%" y1="25%" y2="25%" class="cell-line"></line>
+    <line x1="25%" x2="25%" y1="5%" y2="95%" class="cell-line"></line>
+    <line x1="5%" x2="95%" y1="35%" y2="35%" class="cell-line"></line>
+    <line x1="35%" x2="35%" y1="5%" y2="95%" class="cell-line"></line>
+    <line x1="5%" x2="95%" y1="45%" y2="45%" class="cell-line"></line>
+    <line x1="45%" x2="45%" y1="5%" y2="95%" class="cell-line"></line>
+    <line x1="5%" x2="95%" y1="55%" y2="55%" class="cell-line"></line>
+    <line x1="55%" x2="55%" y1="5%" y2="95%" class="cell-line"></line>
+    <line x1="5%" x2="95%" y1="65%" y2="65%" class="cell-line"></line>
+    <line x1="65%" x2="65%" y1="5%" y2="95%" class="cell-line"></line>
+    <line x1="5%" x2="95%" y1="75%" y2="75%" class="cell-line"></line>
+    <line x1="75%" x2="75%" y1="5%" y2="95%" class="cell-line"></line>
+    <line x1="5%" x2="95%" y1="85%" y2="85%" class="cell-line"></line>
+    <line x1="85%" x2="85%" y1="5%" y2="95%" class="cell-line"></line>
+    <line x1="5%" x2="95%" y1="95%" y2="95%" class="cell-line"></line>
+    <line x1="95%" x2="95%" y1="5%" y2="95%" class="cell-line"></line>
+
+    <line x1="35%" x2="35%" y1="65%" y2="65%" class="dot"></line>
+    <line x1="35%" x2="35%" y1="35%" y2="35%" class="dot"></line>
+    <line x1="65%" x2="65%" y1="65%" y2="65%" class="dot"></line>
+    <line x1="65%" x2="65%" y1="35%" y2="35%" class="dot"></line>
+
+    <line x1="0%" x2="0%" y1="0%" y2="100%" class="border-line"></line>
+    <line x1="0%" x2="100%" y1="0%" y2="0%" class="border-line"></line>
+    <line x1="100%" x2="0%" y1="100%" y2="100%" class="border-line"></line>
+    <line x1="100%" x2="100%" y1="100%" y2="0%" class="border-line"></line>
+</svg>
