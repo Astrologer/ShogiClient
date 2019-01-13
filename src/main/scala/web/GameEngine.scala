@@ -19,45 +19,53 @@ import scala.scalajs.js.timers.setInterval
 object GameEngine {
   val shapes = TreeSet.empty[GameObject](GameObject)
   var ctx2d: CanvasRenderingContext2D = null
-  var width: Int = 0
-  var height: Int = 0
 
   @JSExport("init")
   def init(canvas: Canvas, width: Int, height: Int) {
     ctx2d = canvas.getContext("2d").asInstanceOf[CanvasRenderingContext2D]
     canvas.width = width;
     canvas.height = height;
-    this.width = width
-    this.height = height
 
+    Positioner.setSize(width, height)
     loadObjects()
+    loadState()
     setInterval(500) { render() }
   }
 
-  def loadState(sfen: String = "9/9/9/9/4P4/9/9/9/9 b G") {
+  def loadState(sfen: String = "9/9/9/9/4PP3/4PP3/4PP3/9/9 b G") {
+    def isNum(s: String) = s forall Character.isDigit
+    def getPiecesWithCol(row: String): Array[(String, Int)] = {
+      val items = row.reverse.split("(?!\\+)").reverse
+      val ind = items.map(x => if (isNum(x)) x.toInt else 1).scanLeft(1)(_ + _)
+      items
+        .zip(ind)
+        .filter(i => !isNum(i._1))
+    }
+
+    sfen
+      .split(" ")(0)
+      .split("/")
+      .zipWithIndex
+      .foreach{ case(x, row) =>
+        getPiecesWithCol(x)
+          .foreach{ case(p, col) => addShape(Piece(PieceEnum.withName(p), row + 1, col)) }
+      }
   }
 
   def loadObjects() {
     val board = new GameObject(0, 1)
     board
       .setImage("images/board.svg")
-      .setScale(15)
-      .setX(800)
-      .setY(120)
-
-    val piece = new GameObject(0, 2)
-    piece
-      .setImage("images/piece_p.svg")
-      .setScale(1.5)
-      .setX(876)
-      .setY(195)
+      .setScale(Positioner.getBoardScale)
+      .setX(Positioner.getBoardX)
+      .setY(Positioner.getBoardY)
 
     addShape(board)
-    addShape(piece)
+    println(shapes)
   }
 
   def render() {
-    ctx2d.clearRect(0, 0, width, height)
+    ctx2d.clearRect(0, 0, Positioner.width, Positioner.height)
     shapes.foreach(shape => if (shape.isActive) shape.render(ctx2d))
   }
 

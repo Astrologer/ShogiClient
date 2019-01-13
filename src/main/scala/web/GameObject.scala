@@ -14,9 +14,7 @@ class GameObject(val layer: Int, val id: Int) {
   var image: Option[Image] = None
 
   def render(ctx2d: CanvasRenderingContext2D) {
-    if (image.nonEmpty) {
-      image.foreach(i => ctx2d.drawImage(i, x, y, baseSize * scale, baseSize * scale))
-    }
+    image.foreach(i => ctx2d.drawImage(i, x, y, baseSize * scale, baseSize * scale))
   }
 
   def containsPoint(x: Int, y: Int): Boolean =
@@ -50,6 +48,11 @@ class GameObject(val layer: Int, val id: Int) {
   }
 
   def isActive = active
+
+  def adjustPosition() {
+    // TODO update X, Y and scale after window resize
+    // should be overriden by child classes
+  }
 }
 
 
