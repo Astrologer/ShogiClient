@@ -3,13 +3,17 @@ package web
 import scala.scalajs.js.annotation.{JSExportTopLevel, JSExport}
 import org.scalajs.dom.CanvasRenderingContext2D
 import org.scalajs.dom.html.Canvas
+import org.scalajs.dom
 import scala.collection.mutable.TreeSet
 import scala.scalajs.js.timers.setInterval
 
 /**
  * TODO:
- *  - game object with mouse handling / coordinate resolving, board model
- *  - resource loader with JSON like configration / removing configuration from the code
+ *  - gameObjects tempaltes storage (Prefabs) and instantiation
+ *  - extend pieces functionality with flipping and promotion
+ *  - split gameObjects into board, pieces and suplementaries, combine them inside `def shapes`
+ *  -? game object with mouse handling / coordinate resolving, board model
+ *  -? resource loader with JSON like configration / removing configuration from the code
  *  - events queue to render screen ? timestamps and frame skiping
  *
  *  - webSocket command layer
@@ -19,20 +23,42 @@ import scala.scalajs.js.timers.setInterval
 object GameEngine {
   val shapes = TreeSet.empty[GameObject](GameObject)
   var ctx2d: CanvasRenderingContext2D = null
+  val state: GameState = new GameState
 
   @JSExport("init")
-  def init(canvas: Canvas, width: Int, height: Int) {
+  def init(canvas: Canvas, width: Int, height: Int, density: Double) {
     ctx2d = canvas.getContext("2d").asInstanceOf[CanvasRenderingContext2D]
-    canvas.width = width;
-    canvas.height = height;
+    canvas.width = (width * density).toInt
+    canvas.height = (height * density).toInt
 
-    Positioner.setSize(width, height)
+    Positioner.setSize((width * density).toInt, (height * density).toInt)
     loadObjects()
     loadState()
     setInterval(500) { render() }
+
+    canvas.onclick = (e: dom.MouseEvent) => clickHandler((e.clientX * density).toInt, (e.clientY * density).toInt)
+    shapes.foreach { p => println(s"${p.isInstanceOf[Piece]}") }
   }
 
-  def loadState(sfen: String = "9/9/9/9/4PP3/4PP3/4PP3/9/9 b G") {
+  def getPieceClicked(x: Int, y: Int): Option[Piece] =
+    shapes
+      .filter(p => p.isInstanceOf[Piece] && p.containsPoint(x,  y))
+      .headOption
+      .asInstanceOf[Option[Piece]]
+
+  def clickHandler(x: Int, y: Int) {
+    val piece = getPieceClicked(x, y)
+    println(s"${x} ${y} ${piece.isEmpty} ${state.activePiece.isEmpty}")
+    (piece.nonEmpty, state.activePiece.nonEmpty) match {
+      case (false, true) =>
+        state.activePiece.foreach(_.setPos(Positioner.getPieceRow(y), Positioner.getPieceCol(x)))
+        state.activePiece = None
+      case (true, false) => state.activePiece = piece
+      case _ => println("miss")
+    }
+  }
+
+  def loadState(sfen: String = "lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL b") {
     def isNum(s: String) = s forall Character.isDigit
     def getPiecesWithCol(row: String): Array[(String, Int)] = {
       val items = row.reverse.split("(?!\\+)").reverse

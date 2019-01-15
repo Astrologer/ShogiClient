@@ -10,7 +10,7 @@
             width: 100%;
             left: 0px;
             top:0px;
-            background: #eee;
+            background: #fff;
             position: absolute;
             display: block;
         }
@@ -22,10 +22,7 @@
         <script type="text/javascript" src="../shogi-client-fastopt.js"></script>
 
         <script>
-            var mul = window.devicePixelRatio;
-            GameEngine.init(document.getElementById("canvas"),
-                            Math.trunc(window.innerWidth * mul),
-                            Math.trunc(window.innerHeight * mul));
+            GameEngine.init(document.getElementById("canvas"), window.innerWidth, window.innerHeight, window.devicePixelRatio);
         </script>
     </body>
 </html>
