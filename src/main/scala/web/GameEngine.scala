@@ -3,6 +3,7 @@ package web
 import scala.scalajs.js.annotation.{JSExportTopLevel, JSExport}
 import org.scalajs.dom.CanvasRenderingContext2D
 import org.scalajs.dom.html.Canvas
+import org.scalajs.dom.WebSocket
 import org.scalajs.dom
 import scala.collection.mutable.TreeSet
 import scala.scalajs.js.timers.setInterval
@@ -24,6 +25,7 @@ object GameEngine {
   val shapes = TreeSet.empty[GameObject](GameObject)
   var ctx2d: CanvasRenderingContext2D = null
   val state: GameState = new GameState
+  var sock: WebSocket = null
 
   @JSExport("init")
   def init(canvas: Canvas, width: Int, height: Int, density: Double) {
@@ -36,7 +38,16 @@ object GameEngine {
     loadState()
     setInterval(500) { render() }
 
-    canvas.onclick = (e: dom.MouseEvent) => clickHandler((e.clientX * density).toInt, (e.clientY * density).toInt)
+    sock = new WebSocket("ws://127.0.0.1:9000/socket")
+    sock.onopen = e => {
+      sock.send("""{"type": "subs", "body": "111", "isBlack": true}""")
+      setInterval(30000) { sock.send("""{"type": "ping", "body": "x"}""") }
+      canvas.onclick = (e: dom.MouseEvent) => clickHandler((e.clientX * density).toInt, (e.clientY * density).toInt)
+    }
+
+    // sock.onclose = e => ...
+    // sock.onmessage = e: dom.MessageEvent => ... update board
+
     shapes.foreach { p => println(s"${p.isInstanceOf[Piece]}") }
   }
 
