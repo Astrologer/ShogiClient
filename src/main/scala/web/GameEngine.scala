@@ -27,6 +27,11 @@ object GameEngine {
   val state: GameState = new GameState
   var sock: WebSocket = null
 
+    println("---")
+    val v = Protocol.Message.fromJSON(""" {"type": "subs", "arg1": "111", "arg2": "true"}""")
+    println(v)
+    println(Protocol.PingMessage("12").toJSON)
+
   @JSExport("init")
   def init(canvas: Canvas, width: Int, height: Int, density: Double) {
     ctx2d = canvas.getContext("2d").asInstanceOf[CanvasRenderingContext2D]
@@ -40,13 +45,16 @@ object GameEngine {
 
     sock = new WebSocket("ws://127.0.0.1:9000/socket")
     sock.onopen = e => {
-      sock.send("""{"type": "subs", "body": "111", "isBlack": true}""")
-      setInterval(30000) { sock.send("""{"type": "ping", "body": "x"}""") }
+      sock.send("""{"type": "subs", "arg1": "111", "arg2": "true"}""")
+      setInterval(10000) { sock.send("""{"type": "ping", "arg1": "x"}""") }
       canvas.onclick = (e: dom.MouseEvent) => clickHandler((e.clientX * density).toInt, (e.clientY * density).toInt)
     }
-
+    sock.onmessage = e => println(s"message: ${e.data}")
     // sock.onclose = e => ...
     // sock.onmessage = e: dom.MessageEvent => ... update board
+
+
+
 
     shapes.foreach { p => println(s"${p.isInstanceOf[Piece]}") }
   }
