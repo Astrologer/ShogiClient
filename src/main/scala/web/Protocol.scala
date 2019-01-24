@@ -54,9 +54,10 @@ object Protocol {
 
       val msg: Option[Message] = tpe match {
         case "state" => for (gameId <- arg1; sfen <- arg2; action <- arg3) yield StateMessage(gameId, sfen, action)
-        case "subs" => for (gameId <- arg1; isBlack <- arg2) yield SubscribeMessage(gameId, isBlack)
+        case "subs" => for (gameId <- arg1; isBlack <- arg2) yield SubscribeMessage(gameId, isBlack.toBoolean)
         case "move" => for (gameId <- arg1; move <- arg2) yield MoveMessage(gameId, move)
-        case "ping" => for (id <- arg1) yield PingMessage(id)
+        case "ping" => for (id <- arg1) yield PingMessage(id.toLong)
+        case "pong" => for (id <- arg1) yield PongMessage(id.toLong)
 
         case _ => None
       }
@@ -67,9 +68,9 @@ object Protocol {
     }
   }
 
-  case class PingMessage(id: String) extends Message("ping", Some(id))
-  case class PongMessage(id: String) extends Message("pong", Some(id))
+  case class PingMessage(id: Long) extends Message("ping", Some(id.toString))
+  case class PongMessage(id: Long) extends Message("pong", Some(id.toString))
   case class StateMessage(gameId: String, sfen: String, action: String) extends Message("state", Some(gameId), Some(sfen), Some(action))
-  case class SubscribeMessage(gameId: String, isBlack: String) extends Message("state", Some(gameId), Some(isBlack))
+  case class SubscribeMessage(gameId: String, isBlack: Boolean) extends Message("subs", Some(gameId), Some(isBlack.toString))
   case class MoveMessage(gameId: String, move: String) extends Message("move", Some(gameId), Some(move))
 }

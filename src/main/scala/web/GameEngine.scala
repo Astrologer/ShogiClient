@@ -1,38 +1,22 @@
 package web
 
-import scala.scalajs.js.annotation.{JSExportTopLevel, JSExport}
-import org.scalajs.dom.CanvasRenderingContext2D
+import org.scalajs.dom.{CanvasRenderingContext2D, MouseEvent}
 import org.scalajs.dom.html.Canvas
-import org.scalajs.dom.WebSocket
-import org.scalajs.dom
 import scala.collection.mutable.TreeSet
 import scala.scalajs.js.timers.setInterval
 
-/**
- * TODO:
- *  - gameObjects tempaltes storage (Prefabs) and instantiation
- *  - extend pieces functionality with flipping and promotion
- *  - split gameObjects into board, pieces and suplementaries, combine them inside `def shapes`
- *  -? game object with mouse handling / coordinate resolving, board model
- *  -? resource loader with JSON like configration / removing configuration from the code
- *  - events queue to render screen ? timestamps and frame skiping
- *
- *  - webSocket command layer
- */
 
-@JSExportTopLevel("GameEngine")
 object GameEngine {
-  val shapes = TreeSet.empty[GameObject](GameObject)
+  val board = TreeSet.empty[GameObject](GameObject)
+  val pieces = TreeSet.empty[Piece](Piece)
+  def shapes: Iterable[GameObject] = board.toIterable ++ pieces.toIterable
+
   var ctx2d: CanvasRenderingContext2D = null
   val state: GameState = new GameState
-  var sock: WebSocket = null
+  var channel: Channel = null
 
-    println("---")
-    val v = Protocol.Message.fromJSON(""" {"type": "subs", "arg1": "111", "arg2": "true"}""")
-    println(v)
-    println(Protocol.PingMessage("12").toJSON)
+  var postMoveHandler: String => Unit = identity
 
-  @JSExport("init")
   def init(canvas: Canvas, width: Int, height: Int, density: Double) {
     ctx2d = canvas.getContext("2d").asInstanceOf[CanvasRenderingContext2D]
     canvas.width = (width * density).toInt
@@ -40,23 +24,14 @@ object GameEngine {
 
     Positioner.setSize((width * density).toInt, (height * density).toInt)
     loadObjects()
-    loadState()
+    //loadState()
     setInterval(500) { render() }
 
-    sock = new WebSocket("ws://127.0.0.1:9000/socket")
-    sock.onopen = e => {
-      sock.send("""{"type": "subs", "arg1": "111", "arg2": "true"}""")
-      setInterval(10000) { sock.send("""{"type": "ping", "arg1": "x"}""") }
-      canvas.onclick = (e: dom.MouseEvent) => clickHandler((e.clientX * density).toInt, (e.clientY * density).toInt)
-    }
-    sock.onmessage = e => println(s"message: ${e.data}")
-    // sock.onclose = e => ...
-    // sock.onmessage = e: dom.MessageEvent => ... update board
+    canvas.onclick = (e: MouseEvent) => clickHandler((e.clientX * density).toInt, (e.clientY * density).toInt)
+  }
 
-
-
-
-    shapes.foreach { p => println(s"${p.isInstanceOf[Piece]}") }
+  def setPostMoveHandler(handler: String => Unit) {
+    postMoveHandler = handler
   }
 
   def getPieceClicked(x: Int, y: Int): Option[Piece] =
@@ -70,8 +45,13 @@ object GameEngine {
     println(s"${x} ${y} ${piece.isEmpty} ${state.activePiece.isEmpty}")
     (piece.nonEmpty, state.activePiece.nonEmpty) match {
       case (false, true) =>
-        state.activePiece.foreach(_.setPos(Positioner.getPieceRow(y), Positioner.getPieceCol(x)))
-        state.activePiece = None
+        state.activePiece.foreach { p =>
+          val move = p.getMove(Positioner.getPieceRow(y), Positioner.getPieceCol(x))
+          println(move)
+          p.setPos(Positioner.getPieceRow(y), Positioner.getPieceCol(x))
+          state.activePiece = None
+          postMoveHandler(move)
+        }
       case (true, false) => state.activePiece = piece
       case _ => println("miss")
     }
@@ -87,13 +67,15 @@ object GameEngine {
         .filter(i => !isNum(i._1))
     }
 
+    pieces.clear
+
     sfen
       .split(" ")(0)
       .split("/")
       .zipWithIndex
       .foreach{ case(x, row) =>
         getPiecesWithCol(x)
-          .foreach{ case(p, col) => addShape(Piece(PieceEnum.withName(p), row + 1, col)) }
+          .foreach{ case(p, col) => addPiece(Piece(PieceEnum.withName(p), row + 1, col)) }
       }
   }
 
@@ -105,8 +87,7 @@ object GameEngine {
       .setX(Positioner.getBoardX)
       .setY(Positioner.getBoardY)
 
-    addShape(board)
-    println(shapes)
+    setBoard(board)
   }
 
   def render() {
@@ -114,7 +95,12 @@ object GameEngine {
     shapes.foreach(shape => if (shape.isActive) shape.render(ctx2d))
   }
 
-  def addShape(shape: GameObject) {
-    shapes.add(shape)
+  def setBoard(shape: GameObject) {
+    board.clear
+    board.add(shape)
+  }
+
+  def addPiece(piece: Piece) {
+    pieces.add(piece)
   }
 }

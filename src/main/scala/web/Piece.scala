@@ -4,29 +4,6 @@ import org.scalajs.dom.CanvasRenderingContext2D
 import org.scalajs.dom.html.Image
 import org.scalajs.dom
 
-
-class Piece(id: Int, var row: Int, var col: Int) extends GameObject(1, id) {
-  setRow(row)
-  setCol(col)
-  setScale(Positioner.getPieceScale)
-
-  println(s"$id -  $x $y, $row $col")
-  def setPos(row: Int, col: Int) {
-    setRow(row)
-    setCol(col)
-  }
-
-  def setRow(row: Int) {
-    this.row = row
-    setY(Positioner.getPieceY(row))
-  }
-
-  def setCol(col: Int) {
-    this.col = col
-    setX(Positioner.getPieceX(col))
-  }
-}
-
 object PieceEnum extends Enumeration {
   type PieceEmunType = Value
   val WP = Value("p")
@@ -60,7 +37,33 @@ object PieceEnum extends Enumeration {
   val BBX = Value("+B")
 }
 
-object Piece extends Enumeration {
+class Piece(kind: PieceEnum.PieceEmunType, id: Int, var row: Int, var col: Int) extends GameObject(1, id) {
+  setRow(row)
+  setCol(col)
+  setScale(Positioner.getPieceScale)
+
+  //println(s"$id -  $x $y, $row $col")
+  def setPos(row: Int, col: Int) {
+    setRow(row)
+    setCol(col)
+  }
+
+  def setRow(row: Int) {
+    this.row = row
+    setY(Positioner.getPieceY(row))
+  }
+
+  def setCol(col: Int) {
+    this.col = col
+    setX(Positioner.getPieceX(col))
+  }
+
+  def getMove(row: Int, col: Int): String = {
+    s"${kind}${10 - this.col}${(this.row + 96).toChar}-${10 - col}${(row + 96).toChar}"
+  }
+}
+
+object Piece extends Enumeration with Ordering[Piece] {
   import PieceEnum._
 
   val image, scale, x, y = Value
@@ -99,7 +102,7 @@ object Piece extends Enumeration {
 
   def apply(kind: PieceEmunType, row: Int, col: Int) = {
     id += 1
-    var piece = new Piece(id, row, col)
+    var piece = new Piece(kind, id, row, col)
 
     config(kind).foreach { case (kind, value) => kind match {
       case Piece.scale => piece.setScale(value.toDouble)
@@ -108,5 +111,11 @@ object Piece extends Enumeration {
       case Piece.y => piece.setY(value.toInt)
     }}
     piece
+  }
+
+  def compare(l: Piece, r: Piece): Int = {
+    if (l.id == r.id) 0
+    else if (l.id < r.id) -1
+    else 1
   }
 }
