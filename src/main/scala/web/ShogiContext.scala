@@ -2,7 +2,7 @@ package web
 
 import scala.scalajs.js.annotation.{JSExportTopLevel, JSExport}
 import org.scalajs.dom.html.Canvas
-import org.scalajs.dom.{document, window}
+import org.scalajs.dom.{document, window, XMLHttpRequest, Event, Node, Element}
 
 /**
  * TODO:
@@ -22,6 +22,38 @@ object ShogiContext {
 
   @JSExport("init")
   def init(canvasId: String) {
+    if (Args.gameId.nonEmpty)
+      startGame(canvasId)
+    else
+      createNew
+  }
+
+  def createNew() {
+    val xhr = new XMLHttpRequest()
+
+    xhr.open("GET", "http://127.0.0.1:9000", true)
+    xhr.withCredentials = true
+    xhr.onload = { (e: Event) =>
+      if (xhr.status == 200) {
+        val gameId = xhr.responseText
+        val dialog = document.getElementById("dlg")
+        val black = document.getElementById("black").asInstanceOf[Element]
+        val white = document.getElementById("white")
+        val blackUrl = s"https://astrologer.github.io/ShogiClient?id=${gameId}&side=black"
+        val whiteUrl = s"https://astrologer.github.io/ShogiClient?id=${gameId}&side=white"
+
+        black.textContent = blackUrl
+        black.setAttribute("href", blackUrl)
+        white.textContent = whiteUrl
+        white.setAttribute("href", whiteUrl)
+        dialog.removeAttribute("hidden")
+      }
+    }
+    xhr.send()
+
+  }
+
+  def startGame(canvasId: String) {
     val canvas = document.getElementById(canvasId).asInstanceOf[Canvas]
     val width = window.innerWidth
     val height = window.innerHeight
@@ -33,8 +65,6 @@ object ShogiContext {
     channel.setStateHandler { sfen => GameEngine.loadState(sfen) }
     channel.init
     GameEngine.setPostMoveHandler { move => channel.sendMove(move) }
-
-    println(document.location.search)
   }
 
 }

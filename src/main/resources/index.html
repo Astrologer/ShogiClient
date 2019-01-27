@@ -14,9 +14,29 @@
             position: absolute;
             display: block;
         }
+        .dialog {
+            position: absolute;
+            padding: 5% 0 5% 0;
+            top: 25%;
+            left: 25%;
+            width: 50%;
+            height: 20%;
+            background: #eee;
+            border-radius: 2%;
+            border-color: #000;
+            border-style: solid;
+        }
+        li { margin: 20px; }
     </style>
     <body>
         <canvas class="board" id="canvas"></canvas>
+        <div id="dlg" class="dialog" hidden>
+            <center><b>New game was created</b></center>
+            <ul>
+                <li>Black - <a id="black" href="">aaaa</a></li>
+                <li>White - <a id="white" href="">bbbb</a></li>
+            </ul>
+        </div>
 
         <!--script type="text/javascript" src="../shogi-client-opt.js"></script-->
         <script type="text/javascript" src="../shogi-client-fastopt.js"></script>
