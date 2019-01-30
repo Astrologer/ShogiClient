@@ -6,55 +6,29 @@ import scala.collection.mutable.TreeSet
 import scala.scalajs.js.timers.setInterval
 
 
-object GameEngine {
+trait GameEngine {
+  this: BussClient =>
+
   val board = TreeSet.empty[GameObject](GameObject)
   val pieces = TreeSet.empty[Piece](Piece)
   def shapes: Iterable[GameObject] = board.toIterable ++ pieces.toIterable
 
   var ctx2d: CanvasRenderingContext2D = null
+  var canvas: Canvas = null
   val state: GameState = new GameState
-  var channel: Channel = null
 
-  var postMoveHandler: String => Unit = identity
+  register[NewStateEvent](event => loadState(event.sfen))
 
   def init(canvas: Canvas, width: Int, height: Int, density: Double) {
+    this.canvas = canvas
     ctx2d = canvas.getContext("2d").asInstanceOf[CanvasRenderingContext2D]
     canvas.width = (width * density).toInt
     canvas.height = (height * density).toInt
 
-    Positioner.setSize((width * density).toInt, (height * density).toInt)
+    Positioner.setSize(width, height, density)
     loadObjects()
     //loadState()
     setInterval(500) { render() }
-
-    canvas.onclick = (e: MouseEvent) => clickHandler((e.clientX * density).toInt, (e.clientY * density).toInt)
-  }
-
-  def setPostMoveHandler(handler: String => Unit) {
-    postMoveHandler = handler
-  }
-
-  def getPieceClicked(x: Int, y: Int): Option[Piece] =
-    shapes
-      .filter(p => p.isInstanceOf[Piece] && p.containsPoint(x,  y))
-      .headOption
-      .asInstanceOf[Option[Piece]]
-
-  def clickHandler(x: Int, y: Int) {
-    val piece = getPieceClicked(x, y)
-    println(s"${x} ${y} ${piece.isEmpty} ${state.activePiece.isEmpty}")
-    (piece.nonEmpty, state.activePiece.nonEmpty) match {
-      case (false, true) =>
-        state.activePiece.foreach { p =>
-          val move = p.getMove(Positioner.getPieceRow(y), Positioner.getPieceCol(x))
-          println(move)
-          p.setPos(Positioner.getPieceRow(y), Positioner.getPieceCol(x))
-          state.activePiece = None
-          postMoveHandler(move)
-        }
-      case (true, false) => state.activePiece = piece
-      case _ => println("miss")
-    }
   }
 
   def loadState(sfen: String = "lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL b") {

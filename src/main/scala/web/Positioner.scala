@@ -4,15 +4,20 @@ package web
 object Positioner {
   var width: Int = 0
   var height: Int = 0
+  var density: Double = 0
 
-  def setSize(width: Int, height: Int) {
-    this.width = width
-    this.height = height
+  def setSize(width: Int, height: Int, density: Double) {
+    this.density = density
+    this.width = scale(width)
+    this.height = scale(height)
   }
 
   protected def boardSize: Double = height * 0.9
   protected def boardPadding: Double = boardSize * 0.05
   protected def cellSize: Double = boardSize * 0.1
+
+  def scale(x: Int): Int = (x * density).toInt
+  def scale(x: Double): Int = (x * density).toInt
 
   def getBoardScale: Double = boardSize / 100
   def getBoardY: Int = (height * 0.05).toInt

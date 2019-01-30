@@ -2,7 +2,7 @@ package web
 
 import scala.scalajs.js.annotation.{JSExportTopLevel, JSExport}
 import org.scalajs.dom.html.Canvas
-import org.scalajs.dom.{document, window, XMLHttpRequest, Event, Node, Element}
+import org.scalajs.dom.{document, window, XMLHttpRequest, Event => DEvent, Node, Element}
 
 /**
  * TODO:
@@ -18,7 +18,11 @@ import org.scalajs.dom.{document, window, XMLHttpRequest, Event, Node, Element}
 
 @JSExportTopLevel("ShogiContext")
 object ShogiContext {
-  var channel: Channel = null
+  val BASE_CLIENT_URL = document.location.origin + document.location.pathname
+  // val API_SERVER_URL = "http://127.0.0.1:9000"
+  val API_SERVER_URL = "https://aqueous-sierra-80782.herokuapp.com"
+  // val SOCK_SERVER_URL = "ws://127.0.0.1:9000/socket"
+  val SOCK_SERVER_URL = "wss://aqueous-sierra-80782.herokuapp.com/socket"
 
   @JSExport("init")
   def init(canvasId: String) {
@@ -31,16 +35,16 @@ object ShogiContext {
   def createNew() {
     val xhr = new XMLHttpRequest()
 
-    xhr.open("GET", "http://127.0.0.1:9000", true)
+    xhr.open("GET", API_SERVER_URL, true)
     xhr.withCredentials = true
-    xhr.onload = { (e: Event) =>
+    xhr.onload = { (e: DEvent) =>
       if (xhr.status == 200) {
         val gameId = xhr.responseText
         val dialog = document.getElementById("dlg")
-        val black = document.getElementById("black").asInstanceOf[Element]
+        val black = document.getElementById("black")
         val white = document.getElementById("white")
-        val blackUrl = s"https://astrologer.github.io/ShogiClient?id=${gameId}&side=black"
-        val whiteUrl = s"https://astrologer.github.io/ShogiClient?id=${gameId}&side=white"
+        val blackUrl = s"${BASE_CLIENT_URL}?id=${gameId}&side=black"
+        val whiteUrl = s"${BASE_CLIENT_URL}?id=${gameId}&side=white"
 
         black.textContent = blackUrl
         black.setAttribute("href", blackUrl)
@@ -57,14 +61,10 @@ object ShogiContext {
     val canvas = document.getElementById(canvasId).asInstanceOf[Canvas]
     val width = window.innerWidth
     val height = window.innerHeight
-    val ration = window.devicePixelRatio
+    val ratio = window.devicePixelRatio
 
-    GameEngine.init(canvas, width.toInt, height.toInt, ration)
-
-    channel = new Channel(Args.gameId, Args.isBlack, "ws://127.0.0.1:9000/socket")
-    channel.setStateHandler { sfen => GameEngine.loadState(sfen) }
-    channel.init
-    GameEngine.setPostMoveHandler { move => channel.sendMove(move) }
+    ShogiEngine.init(canvas, width.toInt, height.toInt, ratio)
+    ShogiEngine.notify(InitEvent(Args.gameId, Args.isBlack, SOCK_SERVER_URL))
   }
 
 }
