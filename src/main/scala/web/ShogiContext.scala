@@ -54,7 +54,6 @@ object ShogiContext {
       }
     }
     xhr.send()
-
   }
 
   def startGame(canvasId: String) {

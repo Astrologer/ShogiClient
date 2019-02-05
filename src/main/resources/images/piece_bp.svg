@@ -5,21 +5,15 @@
      xmlns:xlink="http://www.w3.org/1999/xlink">
 
     <style>
-        .cell-line { stroke: rgb(0,0,0); stroke-width: 0.2%; }
         .border-line { stroke: rgb(0,0,0); stroke-width: 1%; stroke-linecap: round }
         .piece { font-size: 40px; padding: 0; }
     </style>
 
-    <line x1="0%" x2="100%" y1="0%" y2="0%" class="cell-line"></line>
-    <line x1="0%" x2="100%" y1="100%" y2="100%" class="cell-line"></line>
-    <line x1="0%" x2="0%" y1="0%" y2="100%" class="cell-line"></line>
-    <line x1="100%" x2="100%" y1="0%" y2="100%" class="cell-line"></line>
+    <line x1="15%" x2="85%" y1="90%" y2="90%" class="border-line"></line>
+    <line x1="15%" x2="25%" y1="90%" y2="20%" class="border-line"></line>
+    <line x1="25%" x2="50%" y1="20%" y2="10%" class="border-line"></line>
+    <line x1="50%" x2="75%" y1="10%" y2="20%" class="border-line"></line>
+    <line x1="75%" x2="85%" y1="20%" y2="90%" class="border-line"></line>
 
-    <line x1="20%" x2="80%" y1="95%" y2="95%" class="border-line"></line>
-    <line x1="20%" x2="25%" y1="95%" y2="20%" class="border-line"></line>
-    <line x1="25%" x2="50%" y1="20%" y2="5%" class="border-line"></line>
-    <line x1="50%" x2="75%" y1="5%" y2="20%" class="border-line"></line>
-    <line x1="75%" x2="80%" y1="20%" y2="95%" class="border-line"></line>
-
-    <text x="30%" y="70%" class="piece">歩</text>
+    <text x="30%" y="65%" class="piece">歩</text>
 </svg>

@@ -7,7 +7,7 @@ import scala.scalajs.js.timers.setInterval
 
 
 trait MouseListener {
-  this: GameEngine with BussClient =>
+  this: GameEngine with BussClient with ObjectsStore =>
 
   register[InitEvent](_ => init)
 

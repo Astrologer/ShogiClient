@@ -37,12 +37,17 @@ object PieceEnum extends Enumeration {
   val BBX = Value("+B")
 }
 
-class Piece(kind: PieceEnum.PieceEmunType, id: Int, var row: Int, var col: Int) extends GameObject(1, id) {
-  setRow(row)
-  setCol(col)
+class Piece extends GameObject(1) with MultiState[PieceEnum.PieceEmunType] {
   setScale(Positioner.getPieceScale)
+  var row: Int = 0
+  var col: Int = 0
 
-  //println(s"$id -  $x $y, $row $col")
+  def copy(): Piece = {
+    val piece = new Piece()
+    piece.setStates(getStates)
+    piece
+  }
+
   def setPos(row: Int, col: Int) {
     setRow(row)
     setCol(col)
@@ -59,57 +64,50 @@ class Piece(kind: PieceEnum.PieceEmunType, id: Int, var row: Int, var col: Int) 
   }
 
   def getMove(row: Int, col: Int): String = {
-    s"${kind}${10 - this.col}${(this.row + 96).toChar}-${10 - col}${(row + 96).toChar}"
+    getState.map{ kind =>
+      s"${kind}${10 - this.col}${(this.row + 96).toChar}-${10 - col}${(row + 96).toChar}"
+    }.getOrElse("")
   }
 }
 
-object Piece extends Enumeration with Ordering[Piece] {
+object Piece extends Ordering[Piece] {
   import PieceEnum._
 
-  val image, scale, x, y = Value
-  val config: Map[PieceEmunType, List[(Value, String)]] = Map(
-    WP -> List((image, "images/piece_wp.svg")),
-    WPX -> List((image, "images/piece_wp.svg")),
-    WL -> List((image, "images/piece_wp.svg")),
-    WLX -> List((image, "images/piece_wp.svg")),
-    WN -> List((image, "images/piece_wp.svg")),
-    WNX -> List((image, "images/piece_wp.svg")),
-    WS -> List((image, "images/piece_wp.svg")),
-    WSX -> List((image, "images/piece_wp.svg")),
-    WG -> List((image, "images/piece_wp.svg")),
-    WK -> List((image, "images/piece_wp.svg")),
-    WR -> List((image, "images/piece_wp.svg")),
-    WRX -> List((image, "images/piece_wp.svg")),
-    WB -> List((image, "images/piece_wp.svg")),
-    WBX -> List((image, "images/piece_wp.svg")),
+  val config: Map[PieceEmunType, String] = Map(
+    WP -> "images/piece_wp.svg",
+    WPX -> "images/piece_wpx.svg",
+    WL -> "images/piece_wl.svg",
+    WLX -> "images/piece_wlx.svg",
+    WN -> "images/piece_wn.svg",
+    WNX -> "images/piece_wnx.svg",
+    WS -> "images/piece_ws.svg",
+    WSX -> "images/piece_wsx.svg",
+    WG -> "images/piece_wg.svg",
+    WK -> "images/piece_wk.svg",
+    WR -> "images/piece_wr.svg",
+    WRX -> "images/piece_wrx.svg",
+    WB -> "images/piece_wb.svg",
+    WBX -> "images/piece_wbx.svg",
 
-    BP -> List((image, "images/piece_bp.svg")),
-    BPX -> List((image, "images/piece_bp.svg")),
-    BL -> List((image, "images/piece_bp.svg")),
-    BLX -> List((image, "images/piece_bp.svg")),
-    BN -> List((image, "images/piece_bp.svg")),
-    BNX -> List((image, "images/piece_bp.svg")),
-    BS -> List((image, "images/piece_bp.svg")),
-    BSX -> List((image, "images/piece_bp.svg")),
-    BG -> List((image, "images/piece_bp.svg")),
-    BK -> List((image, "images/piece_bp.svg")),
-    BR -> List((image, "images/piece_bp.svg")),
-    BRX -> List((image, "images/piece_bp.svg")),
-    BB -> List((image, "images/piece_bp.svg")),
-    BBX -> List((image, "images/piece_bp.svg")),
+    BP -> "images/piece_bp.svg",
+    BPX -> "images/piece_bpx.svg",
+    BL -> "images/piece_bl.svg",
+    BLX -> "images/piece_blx.svg",
+    BN -> "images/piece_bn.svg",
+    BNX -> "images/piece_bnx.svg",
+    BS -> "images/piece_bs.svg",
+    BSX -> "images/piece_bsx.svg",
+    BG -> "images/piece_bg.svg",
+    BK -> "images/piece_bk.svg",
+    BR -> "images/piece_br.svg",
+    BRX -> "images/piece_brx.svg",
+    BB -> "images/piece_bb.svg",
+    BBX -> "images/piece_bbx.svg",
   )
-  var id: Int = 10
 
-  def apply(kind: PieceEmunType, row: Int, col: Int) = {
-    id += 1
-    var piece = new Piece(kind, id, row, col)
-
-    config(kind).foreach { case (kind, value) => kind match {
-      case Piece.scale => piece.setScale(value.toDouble)
-      case Piece.image => piece.setImage(value)
-      case Piece.x => piece.setX(value.toInt)
-      case Piece.y => piece.setY(value.toInt)
-    }}
+  def apply() = {
+    var piece = new Piece
+    config.foreach { case (state, image) => piece.setImage(state, image) }
     piece
   }
 

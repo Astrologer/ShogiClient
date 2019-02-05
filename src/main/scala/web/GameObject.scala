@@ -5,7 +5,18 @@ import org.scalajs.dom.html.Image
 import org.scalajs.dom
 
 
-class GameObject(val layer: Int, val id: Int) {
+object Counter {
+  var id: Int = 0
+  def getNext: Int = { id += 1; id }
+}
+
+trait IdGenerator {
+  val counter: Counter.type = Counter
+  def getId: Int = counter.getNext
+}
+
+class GameObject(val layer: Int) extends IdGenerator {
+  val id: Int = getId
   var baseSize = 100
   var scale: Double = 1
   var x: Int = 0
@@ -19,6 +30,11 @@ class GameObject(val layer: Int, val id: Int) {
 
   def containsPoint(x: Int, y: Int): Boolean =
     this.x <= x && this.x + baseSize * scale >= x && this.y <= y && this.y + baseSize * scale >= y
+
+  def setImage(image: Option[Image]): GameObject = {
+    this.image = image
+    this
+  }
 
   def setImage(image: Image): GameObject = {
     this.image = Some(image)

@@ -1,3 +1,3 @@
 package web
 
-object ShogiEngine extends BussClient with GameEngine with MouseListener with Networking
+object ShogiEngine extends BussClient with ObjectsStore with GameEngine with MouseListener with Networking

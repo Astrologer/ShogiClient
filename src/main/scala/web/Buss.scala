@@ -4,14 +4,11 @@ import scala.reflect.ClassTag
 import scala.reflect.classTag
 import scala.language.existentials
 
+
 sealed trait Event
 case class InitEvent(gameId: String, isBlack: Boolean, url: String) extends Event
 case class NewStateEvent(sfen: String) extends Event
 case class PlayerMoveEvent(move: String) extends Event
-
-case class MessageEvent(a: String, b: String) extends Event
-case class MoveEvent(a: String, b: String) extends Event
-case class MessageEventz(a: String, b: String)
 
 trait Buss {
   type EventHandler[T] = T => Unit

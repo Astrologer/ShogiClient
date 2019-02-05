@@ -15,5 +15,5 @@
     <line x1="50%" x2="75%" y1="90%" y2="80%" class="border-line"></line>
     <line x1="75%" x2="85%" y1="80%" y2="10%" class="border-line"></line>
 
-    <text x="30%" y="65%" transform="rotate(180,50,50)" class="piece">歩</text>
+    <text x="30%" y="65%" transform="rotate(180,50,50)" class="piece">角</text>
 </svg>

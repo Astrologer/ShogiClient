@@ -15,5 +15,5 @@
     <line x1="50%" x2="75%" y1="10%" y2="20%" class="border-line"></line>
     <line x1="75%" x2="85%" y1="20%" y2="90%" class="border-line"></line>
 
-    <text x="30%" y="65%" class="piece">歩</text>
+    <text x="30%" y="65%" class="piece">金</text>
 </svg>
