@@ -6,7 +6,7 @@ import scala.collection.mutable.Map
 
 
 trait MultiState[T <: Enumeration#Value] {
-  this: GameObject =>
+  this: Renderable =>
 
   private var images: Map[T, Option[Image]] = Map()
   private var currentState: Option[T] = None

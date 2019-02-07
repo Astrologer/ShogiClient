@@ -4,8 +4,8 @@ import org.scalajs.dom.CanvasRenderingContext2D
 import org.scalajs.dom.html.Image
 import org.scalajs.dom
 
-object PieceEnum extends Enumeration {
-  type PieceEmunType = Value
+
+object PieceConf extends ObjectConf {
   val WP = Value("p")
   val WPX = Value("+p")
   val WL = Value("l")
@@ -35,45 +35,8 @@ object PieceEnum extends Enumeration {
   val BRX = Value("+R")
   val BB = Value("B")
   val BBX = Value("+B")
-}
 
-class Piece extends GameObject(1) with MultiState[PieceEnum.PieceEmunType] {
-  setScale(Positioner.getPieceScale)
-  var row: Int = 0
-  var col: Int = 0
-
-  def copy(): Piece = {
-    val piece = new Piece()
-    piece.setStates(getStates)
-    piece
-  }
-
-  def setPos(row: Int, col: Int) {
-    setRow(row)
-    setCol(col)
-  }
-
-  def setRow(row: Int) {
-    this.row = row
-    setY(Positioner.getPieceY(row))
-  }
-
-  def setCol(col: Int) {
-    this.col = col
-    setX(Positioner.getPieceX(col))
-  }
-
-  def getMove(row: Int, col: Int): String = {
-    getState.map{ kind =>
-      s"${kind}${10 - this.col}${(this.row + 96).toChar}-${10 - col}${(row + 96).toChar}"
-    }.getOrElse("")
-  }
-}
-
-object Piece extends Ordering[Piece] {
-  import PieceEnum._
-
-  val config: Map[PieceEmunType, String] = Map(
+  val states: Map[Value, String] = Map(
     WP -> "images/piece_wp.svg",
     WPX -> "images/piece_wpx.svg",
     WL -> "images/piece_wl.svg",
@@ -105,12 +68,44 @@ object Piece extends Ordering[Piece] {
     BBX -> "images/piece_bbx.svg",
   )
 
-  def apply() = {
-    var piece = new Piece
-    config.foreach { case (state, image) => piece.setImage(state, image) }
-    piece
+  lazy val scale = Positioner.getPieceScale
+  val x = 0
+  val y = 0
+}
+
+class Piece() extends GameObject(PieceConf) {
+  var row: Int = 0
+  var col: Int = 0
+
+  def this(state: PieceConf.Value, row: Int, col: Int) {
+    this
+    setState(state)
+    setPos(row, col)
   }
 
+  def setPos(row: Int, col: Int) {
+    setRow(row)
+    setCol(col)
+  }
+
+  def setRow(row: Int) {
+    this.row = row
+    setY(Positioner.getPieceY(row))
+  }
+
+  def setCol(col: Int) {
+    this.col = col
+    setX(Positioner.getPieceX(col))
+  }
+
+  def getMove(row: Int, col: Int): String = {
+    getState.map{ kind =>
+      s"${kind}${10 - this.col}${(this.row + 96).toChar}-${10 - col}${(row + 96).toChar}"
+    }.getOrElse("")
+  }
+}
+
+object Piece extends Ordering[Piece] {
   def compare(l: Piece, r: Piece): Int = {
     if (l.id == r.id) 0
     else if (l.id < r.id) -1

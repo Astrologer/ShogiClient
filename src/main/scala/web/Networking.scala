@@ -60,6 +60,7 @@ trait Networking {
       case PongMessage(id) => {
         pingLatency = System.currentTimeMillis - pingTs
         println(s"ping[$id]: $pingLatency")
+        notify(PongEvent(true))
       }
 
       case StateMessage(gameId, sfen, action) => notify(NewStateEvent(sfen))

@@ -1,79 +1,40 @@
 package web
 
-import org.scalajs.dom.CanvasRenderingContext2D
 import org.scalajs.dom.html.Image
 import org.scalajs.dom
+import scala.collection.mutable.{Map => MutableMap}
 
 
-object Counter {
-  var id: Int = 0
-  def getNext: Int = { id += 1; id }
-}
+trait ObjectConf extends Enumeration {
+  val states: Map[Value, String]
+  val scale: Double
+  val x, y: Int
 
-trait IdGenerator {
-  val counter: Counter.type = Counter
-  def getId: Int = counter.getNext
-}
+  private var loadedStates: MutableMap[Value, Option[Image]] = null
 
-class GameObject(val layer: Int) extends IdGenerator {
-  val id: Int = getId
-  var baseSize = 100
-  var scale: Double = 1
-  var x: Int = 0
-  var y: Int = 0
-  var active: Boolean = true
-  var image: Option[Image] = None
-
-  def render(ctx2d: CanvasRenderingContext2D) {
-    image.foreach(i => ctx2d.drawImage(i, x, y, baseSize * scale, baseSize * scale))
-  }
-
-  def containsPoint(x: Int, y: Int): Boolean =
-    this.x <= x && this.x + baseSize * scale >= x && this.y <= y && this.y + baseSize * scale >= y
-
-  def setImage(image: Option[Image]): GameObject = {
-    this.image = image
-    this
-  }
-
-  def setImage(image: Image): GameObject = {
-    this.image = Some(image)
-    this
-  }
-
-  def setImage(path: String): GameObject = {
-    val image = dom.document.createElement("img").asInstanceOf[Image]
-    image.src = path
-    image.onload = {e => this.setImage(image)}
-    this
-  }
-
-  def setX(x: Int): GameObject = {
-    this.x = x
-    this
-  }
-
-  def setY(y: Int): GameObject = {
-    this.y = y
-    this
-  }
-
-  def setScale(scale: Double): GameObject = {
-    this.scale = scale
-    this
-  }
-
-  def isActive = active
-
-  def adjustPosition() {
-    // TODO update X, Y and scale after window resize
-    // should be overriden by child classes
+  def getStates(): MutableMap[Value, Option[Image]] = {
+    if (loadedStates == null) {
+      loadedStates = MutableMap()
+      states.foreach { case (state, imagePath) =>
+        val image = dom.document.createElement("img").asInstanceOf[Image]
+        image.src = imagePath
+        loadedStates(state) = None
+        image.onload = {e => loadedStates(state) = Some(image)}
+      }
+    }
+    loadedStates
   }
 }
 
+class GameObject[T <: ObjectConf](config: T, val layer: Int = 1) extends Renderable with MultiState[T#Value] {
+  setScale(config.scale)
+  setStates(config.getStates.asInstanceOf[MutableMap[T#Value, Option[Image]]])
+  setX(config.x)
+  setY(config.y)
+}
 
-object GameObject extends Ordering[GameObject] {
-  def compare(l: GameObject, r: GameObject): Int = {
+object GameObject extends Ordering[GameObject[_]] {
+  def compare(l: GameObject[_], r: GameObject[_]): Int = {
     if (l.id == r.id) 0
     else if (l.id < r.id) -1
     else 1

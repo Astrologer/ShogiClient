@@ -9,6 +9,7 @@ sealed trait Event
 case class InitEvent(gameId: String, isBlack: Boolean, url: String) extends Event
 case class NewStateEvent(sfen: String) extends Event
 case class PlayerMoveEvent(move: String) extends Event
+case class PongEvent(foe: Boolean) extends Event
 
 trait Buss {
   type EventHandler[T] = T => Unit
