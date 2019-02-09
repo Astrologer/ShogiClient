@@ -10,16 +10,16 @@ trait ObjectConf extends Enumeration {
   val scale: Double
   val x, y: Int
 
-  private var loadedStates: MutableMap[Value, Option[Image]] = null
+  private var loadedStates: MutableMap[Value, Awaited[Image]] = null
 
-  def getStates(): MutableMap[Value, Option[Image]] = {
+  def getStates(): MutableMap[Value, Awaited[Image]] = {
     if (loadedStates == null) {
       loadedStates = MutableMap()
       states.foreach { case (state, imagePath) =>
         val image = dom.document.createElement("img").asInstanceOf[Image]
         image.src = imagePath
-        loadedStates(state) = None
-        image.onload = {e => loadedStates(state) = Some(image)}
+        loadedStates(state) = Awaited[Image]
+        image.onload = {e => loadedStates(state).populate(image)}
       }
     }
     loadedStates
@@ -28,7 +28,7 @@ trait ObjectConf extends Enumeration {
 
 class GameObject[T <: ObjectConf](config: T, val layer: Int = 1) extends Renderable with MultiState[T#Value] {
   setScale(config.scale)
-  setStates(config.getStates.asInstanceOf[MutableMap[T#Value, Option[Image]]])
+  setStates(config.getStates.asInstanceOf[MutableMap[T#Value, Awaited[Image]]])
   setX(config.x)
   setY(config.y)
 }

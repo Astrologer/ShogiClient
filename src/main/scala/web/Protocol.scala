@@ -1,7 +1,7 @@
 package web
 
-import scala.scalajs.js.annotation.{JSGlobal, JSExport}
-import scala.scalajs.js.{JSON, isUndefined, Dynamic}
+import scala.scalajs.js.annotation.JSGlobal
+import scala.scalajs.js.{JSON, Dynamic}
 import scala.scalajs.js
 
 object Protocol {

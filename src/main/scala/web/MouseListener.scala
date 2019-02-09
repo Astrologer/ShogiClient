@@ -1,9 +1,6 @@
 package web
 
-import org.scalajs.dom.{CanvasRenderingContext2D, MouseEvent}
-import org.scalajs.dom.html.Canvas
-import scala.collection.mutable.TreeSet
-import scala.scalajs.js.timers.setInterval
+import org.scalajs.dom.MouseEvent
 
 
 trait MouseListener {

@@ -2,7 +2,7 @@ package web
 
 import scala.scalajs.js.annotation.{JSExportTopLevel, JSExport}
 import org.scalajs.dom.html.Canvas
-import org.scalajs.dom.{document, window, XMLHttpRequest, Event => DEvent, Node, Element}
+import org.scalajs.dom.{document, window, XMLHttpRequest, Event => JEvent}
 
 /**
  * TODO:
@@ -37,7 +37,7 @@ object ShogiContext {
 
     xhr.open("GET", API_SERVER_URL, true)
     xhr.withCredentials = true
-    xhr.onload = { (e: DEvent) =>
+    xhr.onload = { (e: JEvent) =>
       if (xhr.status == 200) {
         val gameId = xhr.responseText
         val dialog = document.getElementById("dlg")

@@ -1,9 +1,5 @@
 package web
 
-import org.scalajs.dom.CanvasRenderingContext2D
-import org.scalajs.dom.html.Image
-import org.scalajs.dom
-
 
 object PieceConf extends ObjectConf {
   val WP = Value("p")

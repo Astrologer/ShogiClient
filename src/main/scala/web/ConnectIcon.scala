@@ -1,9 +1,5 @@
 package web
 
-import org.scalajs.dom.html.Image
-import org.scalajs.dom
-import scala.collection.mutable.{Map => MutableMap}
-
 
 object ConnectConf extends ObjectConf {
   val SINGLE, DOUBLE = Value
@@ -19,7 +15,9 @@ object ConnectConf extends ObjectConf {
 
 class ConnectIcon extends GameObject(ConnectConf) with BussClient {
   register[PongEvent](pong(_))
+  register[InitEvent](_ => init)
 
+  def init = setState(ConnectConf.SINGLE)
   def pong(event: PongEvent) {
     if (event.foe) setState(ConnectConf.DOUBLE)
     else setState(ConnectConf.SINGLE)

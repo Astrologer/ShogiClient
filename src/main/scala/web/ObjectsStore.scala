@@ -19,28 +19,14 @@ trait ObjectsStore {
   // TODO shouldn't be here, it's a game logic already, so it should be moved
   // to ShogiEngine as a main game logic router.
   register[NewStateEvent](event => loadState(event.sfen))
-  register[InitEvent](_ => init)
 
-  private def init() {
+  def loadObjects() {
     background.clear
     middleground.clear
     foreground.clear
 
-    /*
-    val board = new GameObject(0)
-    board
-      .setImage("images/board.svg")
-      .setScale(Positioner.getBoardScale)
-      .setX(Positioner.getBoardX)
-      .setY(Positioner.getBoardY)
-*/
     middleground.add(new ConnectIcon)
     background.add(new Board)
-  }
-
-
-  private def addPiece(piece: Piece) {
-    foreground.add(piece)
   }
 
   // ex "lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL b"
@@ -58,8 +44,6 @@ trait ObjectsStore {
         .zip(ind)
         .filter(i => !isNum(i._1))
     }
-
-    foreground.clear
 
     sfen
       .split(" ")(0)

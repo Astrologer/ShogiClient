@@ -23,7 +23,7 @@ trait Renderable extends IdGenerator {
   var x: Int = 0
   var y: Int = 0
   var active: Boolean = true
-  var image: Option[Image] = None
+  var image: Awaited[Image] = Awaited[Image]
 
   def render(ctx2d: CanvasRenderingContext2D) {
     image.foreach(i => ctx2d.drawImage(i, x, y, baseSize * scale, baseSize * scale))
@@ -32,13 +32,13 @@ trait Renderable extends IdGenerator {
   def containsPoint(x: Int, y: Int): Boolean =
     this.x <= x && this.x + baseSize * scale >= x && this.y <= y && this.y + baseSize * scale >= y
 
-  def setImage(image: Option[Image]): Renderable = {
+  def setImage(image: Awaited[Image]): Renderable = {
     this.image = image
     this
   }
 
   def setImage(image: Image): Renderable = {
-    this.image = Some(image)
+    this.image.populate(image)
     this
   }
 

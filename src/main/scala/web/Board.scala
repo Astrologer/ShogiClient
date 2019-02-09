@@ -1,9 +1,5 @@
 package web
 
-import org.scalajs.dom.html.Image
-import org.scalajs.dom
-import scala.collection.mutable.{Map => MutableMap}
-
 
 object BoardConf extends ObjectConf {
   val BLACK, WHITE = Value
@@ -20,7 +16,7 @@ object BoardConf extends ObjectConf {
 class Board extends GameObject(BoardConf) with BussClient {
   register[InitEvent](init(_))
 
-  def init(event: InitEvent) {
+  private def init(event: InitEvent) {
     if (event.isBlack) setState(BoardConf.BLACK)
     else setState(BoardConf.WHITE)
   }

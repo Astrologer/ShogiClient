@@ -19,6 +19,7 @@ trait GameEngine {
     canvas.height = (height * density).toInt
 
     Positioner.setSize(width, height, density)
+    loadObjects
     setInterval(500) { render() }
   }
 

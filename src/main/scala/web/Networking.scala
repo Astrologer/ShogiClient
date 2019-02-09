@@ -1,7 +1,6 @@
 package web
 
 import org.scalajs.dom.WebSocket
-import org.scalajs.dom
 import scala.scalajs.js.timers.{setInterval, clearInterval, setTimeout}
 import scala.scalajs.js.timers.SetIntervalHandle
 import web.Protocol._
@@ -75,6 +74,7 @@ trait Networking {
     sock.foreach { s =>
       s.onopen = e => {
         register(gameId, isBlack)
+        ping
         pingIntervalId = setInterval(PING_INTERVAL) { ping }
       }
       s.onclose = e => reconnect
@@ -82,7 +82,7 @@ trait Networking {
     }
   }
 
-  def sendMove(move: String) {
+  private def sendMove(move: String) {
     sendMessage(MoveMessage(gameId, move))
   }
 }

@@ -1,7 +1,6 @@
 package web
 
 import scala.reflect.ClassTag
-import scala.reflect.classTag
 import scala.language.existentials
 
 
