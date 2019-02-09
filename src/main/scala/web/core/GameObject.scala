@@ -1,9 +1,10 @@
-package web
+package web.core
 
 import org.scalajs.dom.html.Image
 import org.scalajs.dom
 import scala.collection.mutable.{Map => MutableMap}
 
+import web.util.Awaited
 
 trait ObjectConf extends Enumeration {
   val states: Map[Value, String]

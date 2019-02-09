@@ -1,5 +1,6 @@
-package web
+package web.objects
 
+import web.core.{GameObject, ObjectConf, Positioner}
 
 object PieceConf extends ObjectConf {
   val WP = Value("p")

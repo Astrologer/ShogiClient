@@ -1,5 +1,6 @@
-package web
+package web.objects
 
+import web.core.{BussClient, GameObject, ObjectConf, Positioner, InitEvent}
 
 object BoardConf extends ObjectConf {
   val BLACK, WHITE = Value

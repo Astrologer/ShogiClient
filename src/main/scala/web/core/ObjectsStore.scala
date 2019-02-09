@@ -1,6 +1,8 @@
-package web
+package web.core
 
 import scala.collection.mutable.TreeSet
+
+import web.objects.{Board, ConnectIcon, Piece, PieceConf}
 
 /**
  * Loads objects and shares them via `shapes` Iterable object.

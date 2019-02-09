@@ -1,4 +1,4 @@
-package web
+package web.core
 
 import scala.reflect.ClassTag
 import scala.language.existentials

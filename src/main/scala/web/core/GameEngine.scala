@@ -1,4 +1,4 @@
-package web
+package web.core
 
 import org.scalajs.dom.CanvasRenderingContext2D
 import org.scalajs.dom.html.Canvas

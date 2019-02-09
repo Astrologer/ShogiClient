@@ -4,6 +4,10 @@ import scala.scalajs.js.annotation.{JSExportTopLevel, JSExport}
 import org.scalajs.dom.html.Canvas
 import org.scalajs.dom.{document, window, XMLHttpRequest, Event => JEvent}
 
+import web.util.Args
+import web.core.InitEvent
+import web.shogi.ShogiEngine
+
 /**
  * TODO:
  *  - gameObjects tempaltes storage (Prefabs) and instantiation

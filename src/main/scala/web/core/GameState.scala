@@ -1,4 +1,6 @@
-package web
+package web.core
+
+import web.objects.{Piece, PieceConf}
 
 class GameState {
   var isBlackMove: Boolean = true

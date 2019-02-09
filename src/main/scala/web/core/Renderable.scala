@@ -1,9 +1,10 @@
-package web
+package web.core
 
 import org.scalajs.dom.CanvasRenderingContext2D
 import org.scalajs.dom.html.Image
 import org.scalajs.dom
 
+import web.util.Awaited
 
 object Counter {
   var id: Int = 0

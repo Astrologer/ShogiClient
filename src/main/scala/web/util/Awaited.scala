@@ -1,4 +1,4 @@
-package web
+package web.util
 
 class Awaited[T] {
   private var value: Option[T] = None

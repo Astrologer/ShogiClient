@@ -1,4 +1,4 @@
-package web
+package web.util
 
 import scala.scalajs.js.annotation.JSGlobal
 import scala.scalajs.js.{JSON, Dynamic}

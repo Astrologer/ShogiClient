@@ -1,4 +1,4 @@
-package web
+package web.util
 
 import scala.scalajs.js.URIUtils.decodeURIComponent
 import org.scalajs.dom.document

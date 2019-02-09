@@ -1,9 +1,11 @@
-package web
+package web.util
 
 import org.scalajs.dom.WebSocket
 import scala.scalajs.js.timers.{setInterval, clearInterval, setTimeout}
 import scala.scalajs.js.timers.SetIntervalHandle
-import web.Protocol._
+
+import web.util.Protocol._
+import web.core.{BussClient, PlayerMoveEvent, InitEvent, NewStateEvent, PongEvent}
 
 trait Networking {
   this: BussClient =>

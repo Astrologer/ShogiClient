@@ -1,5 +1,6 @@
-package web
+package web.objects
 
+import web.core.{BussClient, GameObject, ObjectConf, InitEvent, PongEvent}
 
 object ConnectConf extends ObjectConf {
   val SINGLE, DOUBLE = Value

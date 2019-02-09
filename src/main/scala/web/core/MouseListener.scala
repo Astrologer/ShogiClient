@@ -1,7 +1,8 @@
-package web
+package web.core
 
 import org.scalajs.dom.MouseEvent
 
+import web.objects.Piece
 
 trait MouseListener {
   this: GameEngine with BussClient with ObjectsStore =>

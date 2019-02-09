@@ -1,8 +1,9 @@
-package web
+package web.core
 
 import org.scalajs.dom.html.Image
 import scala.collection.mutable.Map
 
+import web.util.Awaited
 
 trait MultiState[T <: Enumeration#Value] {
   this: Renderable =>
