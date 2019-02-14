@@ -5,7 +5,7 @@ import scala.scalajs.js.timers.{setInterval, clearInterval, setTimeout}
 import scala.scalajs.js.timers.SetIntervalHandle
 
 import web.util.Protocol._
-import web.core.{BussClient, PlayerMoveEvent, InitEvent, NewStateEvent, PongEvent}
+import web.core.{BussClient, PlayerMoveEvent, InitEvent, NewStateEvent, PongEvent, RenderEvent}
 
 trait Networking {
   this: BussClient =>
@@ -64,7 +64,10 @@ trait Networking {
         notify(PongEvent(true))
       }
 
-      case StateMessage(gameId, sfen, action) => notify(NewStateEvent(sfen))
+      case StateMessage(gameId, sfen, action) => {
+        notify(NewStateEvent(sfen))
+        notify(RenderEvent())
+      }
 
       case _ => println("miss")
     })

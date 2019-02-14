@@ -27,11 +27,13 @@ trait ObjectConf extends Enumeration {
   }
 }
 
-class GameObject[T <: ObjectConf](config: T, val layer: Int = 1) extends Renderable with MultiState[T#Value] {
+abstract class GameObject[T <: ObjectConf](config: T, val layer: Int = 1) extends Renderable with MultiState[T#Value] {
   setScale(config.scale)
   setStates(config.getStates.asInstanceOf[MutableMap[T#Value, Awaited[Image]]])
   setX(config.x)
   setY(config.y)
+
+  def onClick(x: Int, y: Int) {}
 }
 
 object GameObject extends Ordering[GameObject[_]] {

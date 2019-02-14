@@ -6,11 +6,15 @@ import scala.scalajs.js.timers.setInterval
 
 
 trait GameEngine {
-  this: ObjectsStore =>
+  this: BussClient =>
 
   var ctx2d: CanvasRenderingContext2D = null
   var canvas: Canvas = null
-  val state: GameState = new GameState
+
+  def shapes: Iterable[GameObject[_]]
+  def loadShapes: Unit
+
+  register[RenderEvent](_ => render)
 
   def init(canvas: Canvas, width: Int, height: Int, density: Double) {
     this.canvas = canvas
@@ -19,7 +23,7 @@ trait GameEngine {
     canvas.height = (height * density).toInt
 
     Positioner.setSize(width, height, density)
-    loadObjects
+    loadShapes
     setInterval(500) { render() }
   }
 

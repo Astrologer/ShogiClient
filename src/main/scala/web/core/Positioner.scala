@@ -12,9 +12,9 @@ object Positioner {
     this.height = scale(height)
   }
 
-  protected def boardSize: Double = height * 0.9
-  protected def boardPadding: Double = boardSize * 0.05
-  protected def cellSize: Double = boardSize * 0.1
+  def boardSize: Double = height * 0.9
+  def boardPadding: Double = boardSize * 0.05
+  def cellSize: Double = boardSize * 0.1
 
   def scale(x: Int): Int = (x * density).toInt
   def scale(x: Double): Int = (x * density).toInt

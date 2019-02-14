@@ -8,8 +8,8 @@ import web.util.Awaited
 trait MultiState[T <: Enumeration#Value] {
   this: Renderable =>
 
-  private var images: Map[T, Awaited[Image]] = Map()
-  private var currentState: Option[T] = None
+  protected var images: Map[T, Awaited[Image]] = Map()
+  protected var currentState: Option[T] = None
 
   def getStates: Map[T, Awaited[Image]] = images
   def setStates(states: Map[T, Awaited[Image]]) = images = states

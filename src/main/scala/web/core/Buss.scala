@@ -2,13 +2,17 @@ package web.core
 
 import scala.reflect.ClassTag
 import scala.language.existentials
-
+import web.shogi.PieceInfo
 
 sealed trait Event
 case class InitEvent(gameId: String, isBlack: Boolean, url: String) extends Event
 case class NewStateEvent(sfen: String) extends Event
 case class PlayerMoveEvent(move: String) extends Event
 case class PongEvent(foe: Boolean) extends Event
+case class RenderEvent() extends Event
+
+case class PieceClicked(piece: PieceInfo) extends Event
+case class BoardClicked(row: Int, col: Int) extends Event
 
 trait Buss {
   type EventHandler[T] = T => Unit
