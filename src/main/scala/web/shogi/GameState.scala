@@ -4,6 +4,7 @@ import web.objects.{Piece, PieceConf}
 
 class GameState {
   var isBlackMove: Boolean = true
+  var isPlayerBlack: Boolean = true
   var activePiece: Option[PieceInfo] = None
 }
 

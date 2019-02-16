@@ -7,9 +7,12 @@ import scala.collection.mutable.{Map => MutableMap}
 import web.util.Awaited
 
 trait ObjectConf extends Enumeration {
-  val states: Map[Value, String]
-  val scale: Double
-  val x, y: Int
+  def states: Map[Value, String]
+  def scale: Double
+  def x: Int
+  def y: Int
+  def width: Int = (100 * scale).toInt
+  def height: Int = (100 * scale).toInt
 
   private var loadedStates: MutableMap[Value, Awaited[Image]] = null
 
@@ -32,6 +35,8 @@ abstract class GameObject[T <: ObjectConf](config: T, val layer: Int = 1) extend
   setStates(config.getStates.asInstanceOf[MutableMap[T#Value, Awaited[Image]]])
   setX(config.x)
   setY(config.y)
+  setWidth(config.width)
+  setHeight(config.height)
 
   def onClick(x: Int, y: Int) {}
 }

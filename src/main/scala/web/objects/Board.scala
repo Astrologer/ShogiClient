@@ -69,5 +69,6 @@ class Board extends GameObject(BoardConf) with BussClient {
     items
       .zip(ind)
       .filter(i => !isNum(i._1))
+      .map { case (p, i) => (p.reverse, i) }
   }
 }

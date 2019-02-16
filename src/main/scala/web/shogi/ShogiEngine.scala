@@ -1,6 +1,6 @@
 package web.shogi
 
-import web.core.{BussClient, GameEngine, MouseListener, GameObject, NewStateEvent, PieceClicked, BoardClicked, PlayerMoveEvent}
+import web.core.{BussClient, GameEngine, MouseListener, GameObject, NewStateEvent, PieceClicked, BoardClicked, PlayerMoveEvent, InitEvent}
 import web.util.Networking
 import web.objects.{Board, ConnectIcon, BlackHand, WhiteHand}
 
@@ -15,6 +15,11 @@ object ShogiEngine extends BussClient with GameEngine with MouseListener with Ne
 
   register[PieceClicked](pieceClicked(_))
   register[BoardClicked](boardClicked(_))
+  register[InitEvent](init(_))
+
+  private def init(event: InitEvent) {
+    state.isPlayerBlack = event.isBlack
+  }
 
   def loadShapes() {
     background.clear
@@ -24,17 +29,19 @@ object ShogiEngine extends BussClient with GameEngine with MouseListener with Ne
     background.add(new WhiteHand)
   }
 
-  def pieceClicked(event: PieceClicked) {
-    state.activePiece = Some(event.piece)
-    println(state.activePiece)
+  private def pieceClicked(event: PieceClicked) {
+    if (event.piece.black == state.isPlayerBlack) {
+      state.activePiece = Some(event.piece)
+    } else state.activePiece.foreach { p =>
+      state.activePiece = None
+      notify(PlayerMoveEvent(p.getMove(event.piece)))
+    }
   }
 
-  def boardClicked(event: BoardClicked) {
+  private def boardClicked(event: BoardClicked) {
     state.activePiece.foreach { p =>
-      val move = p.getMove(event.row, event.col)
-      println(move)
       state.activePiece = None
-      notify(PlayerMoveEvent(move))
+      notify(PlayerMoveEvent(p.getMove(event.row, event.col)))
     }
   }
 }

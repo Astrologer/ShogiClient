@@ -22,6 +22,7 @@ trait Buss {
   def register[T <: Event](handler: EventHandler[T])(implicit ct: ClassTag[T]) = callbacks = (ct.runtimeClass -> handler) :: callbacks
 
   def notify[T <: Event](event: T)(implicit ct: ClassTag[T]) = {
+    println(s"note: $event")
     callbacks
       .filter(_._1 == ct.runtimeClass)
       .foreach{ case(_, h) => h.asInstanceOf[EventHandler[T]](event) }

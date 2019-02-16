@@ -25,6 +25,8 @@ object HandConf extends ObjectConf {
   lazy val scale = Positioner.getBoardScale
   lazy val x: Int = Positioner.getBoardX + (Positioner.boardSize * 1.03).toInt
   lazy val y: Int = Positioner.getBoardY
+  lazy override val width: Int = Positioner.cellSize.toInt
+  lazy override val height: Int = Positioner.boardSize.toInt
 
   val states: Map[Value, String] = Map(
     WP -> "images/piece_wp.svg",
