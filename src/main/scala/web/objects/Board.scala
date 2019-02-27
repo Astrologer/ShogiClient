@@ -12,13 +12,14 @@ object BoardConf extends ObjectConf {
   lazy val y = Positioner.getBoardY
 
   val states: Map[Value, String] = Map(
-    BLACK -> "images/board.svg",
-    WHITE -> "images/board.svg"
+    BLACK -> "images/board_black.svg",
+    WHITE -> "images/board_white.svg"
   )
 }
 
 class Board extends GameObject(BoardConf) with BussClient {
   var pieces: Iterable[Piece] = List()
+  var isBlack: Boolean = true
 
   register[InitEvent](init(_))
   register[NewStateEvent](event => loadState(event.sfen))
@@ -26,6 +27,7 @@ class Board extends GameObject(BoardConf) with BussClient {
   private def init(event: InitEvent) {
     if (event.isBlack) setState(BoardConf.BLACK)
     else setState(BoardConf.WHITE)
+    this.isBlack = event.isBlack
   }
 
   override def render(ctx2d: CanvasRenderingContext2D) {
@@ -41,7 +43,7 @@ class Board extends GameObject(BoardConf) with BussClient {
     if (piece.nonEmpty) {
       piece.foreach { piece =>
         piece.getState.foreach {
-          state => notify(PieceClicked(PieceInfo(state, piece.row, piece.col)))
+          state => notify(PieceClicked(PieceInfo(state, isBlack, piece.row, piece.col)))
         }
       }
     } else {

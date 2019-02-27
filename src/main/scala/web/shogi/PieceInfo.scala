@@ -13,12 +13,13 @@ case class PieceInfo (
   promoted: Boolean,
   row: Int,
   col: Int,
+  isBlack: Boolean,
   hand: Boolean = false
 ) {
   private def getCell(col: Int, row: Int): String = s"${10 - col}${(row + 96).toChar}"
   private def checkPromotion(fromRow: Int, toRow: Int): Boolean = {
     if (!promoted && kind != PieceTypes.KING && kind != PieceTypes.GOLD &&
-        ((black && (fromRow < 4 || toRow < 4)) || (!black && (fromRow > 6 || toRow > 6)))) {
+        ((isBlack && (fromRow < 4 || toRow < 4)) || (!isBlack && (fromRow > 6 || toRow > 6)))) {
       window.confirm("Do you want to promote?")
     } else false
   }
@@ -83,13 +84,13 @@ object PieceInfo {
 
   private val piece2state: Map[(PieceTypes.Value, Boolean, Boolean), PieceConf.Value] = state2piece.map(_.swap)
 
-  def apply(tpe: PieceConf.Value, row: Int, col: Int): PieceInfo = {
+  def apply(tpe: PieceConf.Value, isBlack: Boolean, row: Int, col: Int): PieceInfo = {
     val (kind, black, promoted) = state2piece(tpe)
-    PieceInfo(kind, black, promoted, row, col)
+    PieceInfo(kind, black, promoted, row, col, isBlack)
   }
 
-  def apply(tpe: PieceConf.Value): PieceInfo = {
+  def apply(tpe: PieceConf.Value, isBlack: Boolean): PieceInfo = {
     val (kind, black, promoted) = state2piece(tpe)
-    PieceInfo(kind, black, false, 0, 0, true)
+    PieceInfo(kind, black, false, 0, 0, isBlack, true)
   }
 }

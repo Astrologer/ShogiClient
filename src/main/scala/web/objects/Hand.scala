@@ -53,13 +53,19 @@ abstract class Hand extends GameObject(HandConf) with BussClient {
   protected def pos2y(i: Int): Int
   protected def y2pos(y: Int): Int
   protected def pieceSize: Int = (baseSize * Positioner.getPieceScale).toInt
-  protected val isBlack: Boolean
+  protected var isBlack: Boolean = true
+  protected val isOwn: Boolean
 
   register[NewStateEvent](updateState(_))
+  register[InitEvent](init(_))
+
+  private def init(event: InitEvent) {
+    isBlack = event.isBlack
+  }
 
   private def updateState(event: NewStateEvent) {
     state = event.sfen.split(" ").lift(2).toList.flatMap(_.split(""))
-      .filter(_.forall(_.isUpper) == isBlack)
+      .filter(_.forall(_.isUpper) == isOwn)
       .map(HandConf.withName(_))
       .foldLeft(Map.empty[HandConf.Value, Int]) {
         (count, piece) => count + (piece -> (count.getOrElse(piece, 0) + 1))
@@ -70,7 +76,7 @@ abstract class Hand extends GameObject(HandConf) with BussClient {
     val pos = y2pos(y)
     if (state.size > pos) {
       val piece = state.toList.sortWith(_._1 > _._1)(pos)._1
-      notify(PieceClicked(PieceInfo(PieceConf.withName(piece.toString))))
+      notify(PieceClicked(PieceInfo(PieceConf.withName(piece.toString), isBlack)))
     }
   }
 
@@ -91,12 +97,12 @@ class BlackHand extends Hand {
   setX(Positioner.getBoardX + (Positioner.boardSize * 1.03).toInt)
   protected def pos2y(i: Int): Int = (Positioner.boardSize + Positioner.getBoardY - (i + 1) * pieceSize).toInt
   protected def y2pos(y: Int): Int = ((Positioner.boardSize + Positioner.getBoardY - y) / pieceSize).toInt
-  protected val isBlack: Boolean = true
+  protected val isOwn: Boolean = true
 }
 
 class WhiteHand extends Hand {
   setX(Positioner.getBoardX - (Positioner.boardSize * 0.03).toInt - pieceSize)
   protected def pos2y(i: Int): Int = (Positioner.getBoardY + i * pieceSize).toInt
   protected def y2pos(y: Int): Int = ((y - Positioner.getBoardY) / pieceSize).toInt
-  protected val isBlack: Boolean = false
+  protected val isOwn: Boolean = false
 }

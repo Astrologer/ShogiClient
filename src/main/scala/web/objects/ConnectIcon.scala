@@ -1,12 +1,12 @@
 package web.objects
 
-import web.core.{BussClient, GameObject, ObjectConf, InitEvent, PongEvent}
+import web.core.{BussClient, GameObject, ObjectConf, InitEvent, PongEvent, Positioner}
 
 object ConnectConf extends ObjectConf {
   val SINGLE, DOUBLE = Value
-  val scale = 1
-  val x = 10
-  val y = 10
+  val scale = Positioner.getPieceScale / 2
+  def x = (Positioner.width  - 100 * scale - 10).toInt
+  def y = 10
 
   val states: Map[Value, String] = Map(
     SINGLE -> "images/connection_part.svg",

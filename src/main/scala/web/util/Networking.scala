@@ -65,7 +65,7 @@ trait Networking {
       }
 
       case StateMessage(gameId, sfen, action) => {
-        notify(NewStateEvent(sfen))
+        notify(NewStateEvent(sfen.map(c => if (c.isUpper ^ isBlack) c.toLower else c.toUpper)))
         notify(RenderEvent())
       }
 

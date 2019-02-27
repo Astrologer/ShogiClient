@@ -1,8 +1,8 @@
 package web.shogi
 
-import web.core.{BussClient, GameEngine, MouseListener, GameObject, NewStateEvent, PieceClicked, BoardClicked, PlayerMoveEvent, InitEvent}
+import web.core.{BussClient, GameEngine, MouseListener, GameObject, NewStateEvent, PieceClicked, BoardClicked, PlayerMoveEvent, InitEvent, Positioner}
 import web.util.Networking
-import web.objects.{Board, ConnectIcon, BlackHand, WhiteHand}
+import web.objects.{Board, ConnectIcon, BlackHand, WhiteHand, MoveIcon}
 
 import scala.collection.mutable.TreeSet
 
@@ -19,6 +19,7 @@ object ShogiEngine extends BussClient with GameEngine with MouseListener with Ne
 
   private def init(event: InitEvent) {
     state.isPlayerBlack = event.isBlack
+    Positioner.setSide(event.isBlack)
   }
 
   def loadShapes() {
@@ -27,10 +28,11 @@ object ShogiEngine extends BussClient with GameEngine with MouseListener with Ne
     background.add(new Board)
     background.add(new BlackHand)
     background.add(new WhiteHand)
+    background.add(new MoveIcon)
   }
 
   private def pieceClicked(event: PieceClicked) {
-    if (event.piece.black == state.isPlayerBlack) {
+    if (event.piece.black) {
       state.activePiece = Some(event.piece)
     } else state.activePiece.foreach { p =>
       state.activePiece = None

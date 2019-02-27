@@ -66,6 +66,9 @@ object ShogiContext {
     val height = window.innerHeight
     val ratio = window.devicePixelRatio
 
+    if (Args.isBlack) document.title = "Black"
+    else document.title = "White"
+
     ShogiEngine.init(canvas, width.toInt, height.toInt, ratio)
     ShogiEngine.notify(InitEvent(Args.gameId, Args.isBlack, SOCK_SERVER_URL))
   }

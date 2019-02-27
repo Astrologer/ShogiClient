@@ -77,6 +77,8 @@ trait Renderable extends IdGenerator {
 
   def isActive = active
 
+  def setActive(active: Boolean) = this.active = active
+
   def adjustPosition() {
     // TODO update X, Y and scale after window resize
     // should be overriden by child classes
